@@ -59,7 +59,7 @@ let make_tree b =
     let c1 = (Char.code b.[node] - 97) * 26 in
     List.filter begin fun i -> 
       let seq = Char.code b.[i] - 97 + c1 in
-      Data.pairs.(seq) depth
+      Data.pairs.(seq) depth 
     end adjacency.(node)
   in
 
@@ -158,4 +158,12 @@ let solve board =
     (fun a b -> compare (String.length b) (String.length a)) list in
   list
 
-
+let _ = 
+  let n = 1000 in
+  let start = Unix.gettimeofday () in
+  for i = 0 to n - 1 do
+    ignore (solve board)
+  done ;
+  let dur = Unix.gettimeofday () -. start in
+  Printf.sprintf "%0.2f ms / solving\n" 
+    (dur /. float_of_int n *. 1000.) 
