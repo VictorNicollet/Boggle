@@ -126,11 +126,20 @@ let appearance_source =
 
   let definitions = 
     DefinitionMap.fold (fun list var acc ->
-      (Printf.sprintf 
-	 "  let _%d = function %s -> true | _ -> false in\n"
-	 var
-	 (String.concat " | " (List.map string_of_int list)))
-      :: acc
+      (match list with 
+	| [] -> 
+	  Printf.sprintf 
+	    "  let _%d _ = false in\n" 
+	    var
+	| [x] ->
+	  Printf.sprintf 
+	    "  let _%d n = n = %d in\n" var x
+	| list ->
+	  Printf.sprintf 
+	    "  let _%d = function %s -> true | _ -> false in\n"
+	    var
+	    (String.concat " | " (List.map string_of_int list))
+      ) :: acc
     ) defs []
   in
 
