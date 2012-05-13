@@ -74,18 +74,32 @@ let make_tree b =
   in
   List.map (aux 0) all
 
+(* In order to avoid moving through the same cell more than once, 
+   have an object that registers when the cell is entered or left. *)
+let visitor () = 
+  let visited = Array.make 16 false in
+  fun node if_visited if_not_visited ->
+    if visited.(node) then Lazy.force if_visited else
+      ( visited.(node) <- true ;
+	let inner = Lazy.force if_not_visited in
+	visited.(node) <- false ;
+	inner ) 
+
 (* Quick preview: traverse the tree and print all maximum words that are, in 
-   theory, allowed by the two-character sequence analysis. This may run 
-   through a given cell more than once. *)
+   theory, allowed by the two-character sequence analysis. *)
     
 let rec all_strings board treelist = 
+  let visit = visitor () in
   let rec aux acc treelist = 
     List.iter begin fun (N (node, treelist)) ->
-      let acc = acc ^ String.make 1 board.[node] in
-      if treelist = [] then print_endline acc else
-	aux acc treelist
+      visit node 
+	(lazy ())
+	(lazy (
+	  let acc = acc ^ String.make 1 board.[node] in
+	  if treelist = [] then print_endline acc else
+	    aux acc treelist
+	 ))
     end treelist
   in
   aux "" treelist
-
-let _ = all_strings board (make_tree board)
+    
