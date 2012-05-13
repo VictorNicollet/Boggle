@@ -20,7 +20,7 @@ let print_board b =
    (12,3) is, in theory, [N [8;9;4]]. In practice, some of these
    edges may be eliminated because they carry impossible two-letter
    sequences. *)
-type tree = N of tree list
+type tree = N of int * tree list
 
 (* Adjacency list. Instead of writing down the rules, it's easier to 
    just write it by hand. *)
@@ -43,3 +43,14 @@ let adjacency =
     [9;10;11;13;15] ;
     [10;11;14]
   |]
+
+(* Constructing the full tree, up to the maximal depth allowed by 
+   the language. This version IGNORES sequences of allowed characters.
+*)
+let make_tree b = 
+  let all = [0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15] in
+  let rec aux depth node = 
+    if depth = Data.longest then N (node,[]) else
+      N (node, List.map (aux (succ depth)) adjacency.(node)) 
+  in
+  List.map (aux 0) all
