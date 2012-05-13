@@ -169,5 +169,15 @@ let make_final node graph =
   in
   Graph.add node (list,true) graph
 
+(* Add all the relevant edges to a graph from a word. *)
+let add_word_edges word graph = 
+  let rec add_prefix_edges word graph = 
+    if word = "" then graph else
+      let prefix = String.sub word 0 (String.length word - 1) in
+      add_prefix_edges prefix (add_edge prefix word graph)
+  in
+  add_prefix_edges word (make_final word graph)
+
+
 
     
