@@ -127,7 +127,7 @@ let wordtrees board =
 	  | _ -> true) list
 	in
 
-	if eow then list else EOW :: list	
+	if eow then EOW :: list else list	
        ))  
   and tree_extract trie tree =     
     let sub = match trie with Data.F s | Data.S s -> s in
@@ -140,3 +140,14 @@ let wordtrees board =
     
   List.map (tree_extract Data.trie) trees
    
+(* Turning a wordtree list into a list of words. *)
+let words_of_wordtrees wordtrees = 
+  let rec of_tree prefix acc = function
+    | EOW -> prefix :: acc 
+    | W (c, list) -> let prefix = prefix ^ String.make 1 c in
+		      List.fold_left (of_tree prefix) acc list 
+  in
+  List.fold_left (of_tree "") [] wordtrees
+		      
+
+
