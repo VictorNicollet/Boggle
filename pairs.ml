@@ -202,3 +202,9 @@ let trie_source =
   in
   "let trie : trie =\n  " ^ serialize "" 
     
+(* Print the trie and pair source *)
+
+let () = 
+  print_endline appearance_source ;
+  print_endline trie_typedef ;
+  print_endline trie_source
