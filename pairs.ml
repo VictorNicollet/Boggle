@@ -185,3 +185,20 @@ let trie = List.fold_left add_word_edges Graph.empty clean_words
 let trie_typedef = 
   "type trie = \n    F of (char * trie) list\n  | S of (char * trie) list\n;;"
 
+(* Extract the serialized definition of a trie. *)
+let trie_source = 
+  let last s = s.[String.length s - 1] in
+  let node s = try Graph.find s trie with Not_found -> [], false in
+  let rec serialize s = 
+    let next, final = node s in 
+    let sub = 
+      List.map 
+	(fun s' -> Printf.sprintf "%C, %s" (last s') (serialize s'))
+	next
+    in
+    Printf.sprintf "%s [%s]" 
+      (if final then "F" else "S")
+      (String.concat ";" sub)
+  in
+  "let trie : trie =\n  " ^ serialize "" 
+    
