@@ -170,7 +170,7 @@ let make_final node graph =
   Graph.add node (list,true) graph
 
 (* Add all the relevant edges to a graph from a word. *)
-let add_word_edges word graph = 
+let add_word_edges graph word = 
   let rec add_prefix_edges word graph = 
     if word = "" then graph else
       let prefix = String.sub word 0 (String.length word - 1) in
@@ -178,6 +178,7 @@ let add_word_edges word graph =
   in
   add_prefix_edges word (make_final word graph)
 
-
+(* Construct the word trie *)
+let trie = List.fold_left add_word_edges Graph.empty clean_words 
 
     
