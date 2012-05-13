@@ -216,4 +216,5 @@ let trie_source =
 let () = 
   print_endline appearance_source ;
   print_endline trie_typedef ;
-  print_endline trie_source
+  print_endline trie_source ;
+  Printf.printf "let longest = %d\n" max_length  
