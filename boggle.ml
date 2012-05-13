@@ -165,5 +165,5 @@ let _ =
     ignore (solve board)
   done ;
   let dur = Unix.gettimeofday () -. start in
-  Printf.sprintf "%0.2f ms / solving\n" 
+  Printf.printf "%0.2f ms / board\n" 
     (dur /. float_of_int n *. 1000.) 
