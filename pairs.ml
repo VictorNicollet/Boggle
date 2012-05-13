@@ -56,3 +56,15 @@ let max_length =
   List.fold_left 
     (fun length word -> max length (String.length word)) 0 
     clean_words
+
+(* There are 676 = 26x26 possible two-letter pairs. We store 
+   information about the distribution of such pairs in a 
+   676-cell array, where 'bc' is stored as [bx26 + c]
+   (that is, [1x26 + 2 = 28]). The function below takes two
+   characters from a string, a position in that string, and
+   returns the index of the corresponding two-letter pair. *)
+let pair_index string pos = 
+  let char_1 = Char.code string.[pos] - 97 in
+  let char_2 = Char.code string.[succ pos] - 97 in
+  char_1 * 26 + char_2 
+
