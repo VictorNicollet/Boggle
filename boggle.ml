@@ -102,4 +102,41 @@ let rec all_strings board treelist =
     end treelist
   in
   aux "" treelist
+   
+(* Traverse using a trie to eliminate impossible prefixes. This function
+   returns wordtrees of possible words. *)
+type wordtree = W of char * wordtree list | EOW
+
+let wordtrees board = 
+  let trees = make_tree board in
+  let visit = visitor () in
+
+  let rec node_extract trie (N (node,trees)) = 
+    visit node (lazy []) 
+      (lazy (
+
+	let eow = match trie with 
+	  | Data.F _ -> true	    
+	  | Data.S _ -> false
+	in
+
+	let list = List.map (tree_extract trie) trees in
+
+	let list = List.filter (function
+	  | W (_,[]) -> false
+	  | _ -> true) list
+	in
+
+	if eow then list else EOW :: list	
+       ))  
+  and tree_extract trie tree =     
+    let sub = match trie with Data.F s | Data.S s -> s in
+    let N (node,_) = tree in
+    let c = board.[node] in
+    try let trie = List.assoc c sub in
+	W (c, node_extract trie tree) 
+    with Not_found -> W (c,[])	  
+  in
     
+  List.map (tree_extract Data.trie) trees
+   
