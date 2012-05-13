@@ -140,4 +140,34 @@ let appearance_source =
   ^ array_contents 
   ^ " |]\n;;"
     
+(* Extract the trie from the dictionary. The trie will be
+   represented as a graph of valid prefixes, where each
+   prefix contains a link to all its direct suffixes that 
+   are still valid, and a boolean indicating whether the
+   suffix is a word. *)
+module Prefix = struct
+  type t = string
+  let compare = compare
+end
+  
+module Graph = Map.Make(Prefix) 
 
+(* Utility function: adding an edge to the graph. *)
+let add_edge src dst graph = 
+  let list, final = 
+    try Graph.find src graph 
+    with Not_found -> [], false
+  in
+  let list = dst :: list in
+  Graph.add src (list,final) graph
+
+(* Utility function: marking a node as final in the graph. *)
+let make_final node graph = 
+  let list, _ = 
+    try Graph.find node graph 
+    with Not_found -> [], false
+  in
+  Graph.add node (list,true) graph
+
+
+    
