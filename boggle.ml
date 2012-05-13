@@ -74,5 +74,18 @@ let make_tree b =
   in
   List.map (aux 0) all
 
+(* Quick preview: traverse the tree and print all maximum words that are, in 
+   theory, allowed by the two-character sequence analysis. This may run 
+   through a given cell more than once. *)
+    
+let rec all_strings board treelist = 
+  let rec aux acc treelist = 
+    List.iter begin fun (N (node, treelist)) ->
+      let acc = acc ^ String.make 1 board.[node] in
+      if treelist = [] then print_endline acc else
+	aux acc treelist
+    end treelist
+  in
+  aux "" treelist
 
-
+let _ = all_strings board (make_tree board)
