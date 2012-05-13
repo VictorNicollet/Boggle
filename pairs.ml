@@ -94,4 +94,50 @@ let appearances = Array.map
 	    (Array.mapi (fun i x -> i,x > 0) array))))
   stats
 
-	       
+(* Generate the source code for the function that determines where
+   a given character pair may appear. *)
+module Definition = struct
+  type t = int list 
+  let compare = compare 
+end
+
+module DefinitionMap = Map.Make(Definition)
+
+let appearance_source = 
+
+  let defs, rev_appearances =
+    Array.fold_left
+      begin fun (defs,list) pos ->
+	let var, defs = 
+	  try DefinitionMap.find pos defs, defs 
+	  with Not_found -> let var = DefinitionMap.cardinal defs in
+			    var, DefinitionMap.add pos var defs
+	in
+	defs, var :: list
+      end 
+      (DefinitionMap.empty, [])
+      appearances
+  in
+
+  let array_contents = 
+    String.concat ";" 
+      (List.rev_map (Printf.sprintf "_%d") rev_appearances) 
+  in
+
+  let definitions = 
+    DefinitionMap.fold (fun list var acc ->
+      (Printf.sprintf 
+	 "  let _%d = function %s -> true | _ -> false in\n"
+	 var
+	 (String.concat " | " (List.map string_of_int list)))
+      :: acc
+    ) defs []
+  in
+
+  "let pairs = \n" 
+  ^ String.concat "" definitions
+  ^ "  [| "
+  ^ array_contents 
+  ^ " |]\n;;"
+    
+
