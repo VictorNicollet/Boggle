@@ -83,3 +83,15 @@ let word_stats word =
 
 (* Compute the stats for all words. *)
 let () = List.iter word_stats clean_words
+
+(* Transform the stats array into an array of "this pair can happen
+   in this list of possible positions". *)
+let appearances = Array.map 
+  (fun array -> 
+    List.map fst 
+      (List.filter snd
+	 (Array.to_list
+	    (Array.mapi (fun i x -> i,x > 0) array))))
+  stats
+
+	       
