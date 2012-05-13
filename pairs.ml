@@ -29,4 +29,25 @@ let clean_word word =
   in 
   if matched then Some word else None
 
+(* This value initially loads all the words from the dictionary, 
+   applying the [clean_word] function to eliminate non-words. *)
+let clean_words = 
+  let input = open_in dictionary in 
+  let rec read acc = 
+    let line = 
+      try Some (input_line input) 
+      with _ -> None 
+    in
+    match line with 
+      | Some line -> let acc = 
+		       match clean_word line with 
+			 | None -> acc 
+			 | Some word -> word :: acc
+		     in	
+		     read acc 
+      | None -> acc
+  in
+  let list = read [] in
+  close_in input ;
+  list
   
