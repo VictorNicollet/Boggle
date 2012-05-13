@@ -73,3 +73,13 @@ let pair_index string pos =
    how many times the pair "ab" has been encountered at position
    [i..i+1] in a string. *)
 let stats = Array.init (max_length - 1) (fun _ -> Array.make 676 0)
+
+(* Compute the stats for a single word. *)
+let word_stats word = 
+  for i = 0 to String.length word - 2 do 
+    let j = pair_index word i in
+    stats.(i).(j) <- succ stats.(i).(j) 
+  done
+
+(* Compute the stats for all words. *)
+let () = List.iter word_stats clean_words
