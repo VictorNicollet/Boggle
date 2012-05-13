@@ -181,4 +181,7 @@ let add_word_edges graph word =
 (* Construct the word trie *)
 let trie = List.fold_left add_word_edges Graph.empty clean_words 
 
-    
+(* The trie is serialized using this type. *)
+let trie_typedef = 
+  "type trie = \n    F of (char * trie) list\n  | S of (char * trie) list\n;;"
+
