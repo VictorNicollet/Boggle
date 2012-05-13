@@ -158,7 +158,7 @@ let add_edge src dst graph =
     try Graph.find src graph 
     with Not_found -> [], false
   in
-  let list = dst :: list in
+  let list = if List.mem dst list then list else dst :: list in
   Graph.add src (list,final) graph
 
 (* Utility function: marking a node as final in the graph. *)
