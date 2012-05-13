@@ -69,16 +69,16 @@ let pair_index string pos =
   char_1 * 26 + char_2 
 
 (* We store information about how many pairs were encountered
-   in an array-of-arrays, such that [stats.(i).("ab")] counts
+   in an array-of-arrays, such that [stats.("ab").(i)] counts
    how many times the pair "ab" has been encountered at position
    [i..i+1] in a string. *)
-let stats = Array.init (max_length - 1) (fun _ -> Array.make 676 0)
+let stats = Array.init 676 (fun _ -> Array.make (max_length - 1) 0)
 
 (* Compute the stats for a single word. *)
 let word_stats word = 
   for i = 0 to String.length word - 2 do 
     let j = pair_index word i in
-    stats.(i).(j) <- succ stats.(i).(j) 
+    stats.(j).(i) <- succ stats.(j).(i) 
   done
 
 (* Compute the stats for all words. *)
