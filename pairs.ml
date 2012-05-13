@@ -68,3 +68,8 @@ let pair_index string pos =
   let char_2 = Char.code string.[succ pos] - 97 in
   char_1 * 26 + char_2 
 
+(* We store information about how many pairs were encountered
+   in an array-of-arrays, such that [stats.(i).("ab")] counts
+   how many times the pair "ab" has been encountered at position
+   [i..i+1] in a string. *)
+let stats = Array.init (max_length - 1) (fun _ -> Array.make 676 0)
