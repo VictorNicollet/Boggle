@@ -149,5 +149,13 @@ let words_of_wordtrees wordtrees =
   in
   List.fold_left (of_tree "") [] wordtrees
 		      
+(* General solving and presenting words longer than 2 characters
+   in decreasing order. *)
+let solve board = 
+  let words = words_of_wordtrees (wordtrees board) in
+  let list = List.filter (fun word -> String.length word > 2) words in
+  let list = List.sort 
+    (fun a b -> compare (String.length b) (String.length a)) list in
+  list
 
 
