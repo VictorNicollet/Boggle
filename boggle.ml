@@ -1,6 +1,6 @@
 (* Representing the board as a 16-character string. *)
 
-let board = "FXIEAMLOEWBXASTU"
+let board = String.lowercase "FXIEAMLOEWBXASTU"
 
 let print_board b = 
   Printf.printf "%c %c %c %c\n%c %c %c %c\n%c %c %c %c\n%c %c %c %c\n"
@@ -45,7 +45,8 @@ let adjacency =
   |]
 
 (* Constructing the full tree, up to the maximal depth allowed by 
-   the language. This version IGNORES sequences of allowed characters.
+   the language. Only allows edges that respect the allowed
+   two-character sequences.
 
    It uses memoization so that building the tree is a linear operation
    instead of exponential (like a graph traversal would be). 
@@ -53,15 +54,25 @@ let adjacency =
 let make_tree b = 
   let all = [0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15] in
   let memo = Array.init Data.longest (fun _ -> Array.make 16 None) in
+
+  let adjacent depth node = 
+    let c1 = (Char.code b.[node] - 97) * 26 in
+    List.filter begin fun i -> 
+      let seq = Char.code b.[i] - 97 + c1 in
+      Data.pairs.(seq) depth
+    end adjacency.(node)
+  in
+
   let rec aux depth node = 
     if depth = Data.longest then N (node,[]) else
       match memo.(depth).(node) with 
 	| None -> 
-	  let list = List.map (aux (succ depth)) adjacency.(node) in
+	  let list = List.map (aux (succ depth)) (adjacent depth node) in
 	  let tree = N (node, list) in 
 	  memo.(depth).(node) <- Some tree ; tree
 	| Some tree -> tree
   in
   List.map (aux 0) all
+
 
 
