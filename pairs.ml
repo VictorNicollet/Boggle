@@ -51,3 +51,8 @@ let clean_words =
   close_in input ;
   list
   
+(* Compute the maximum length of a word in the language. *)
+let max_length = 
+  List.fold_left 
+    (fun length word -> max length (String.length word)) 0 
+    clean_words
